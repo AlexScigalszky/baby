@@ -176,8 +176,31 @@ function setupGenderSwitcher() {
 
       // Aplicar tema a partir de la variable global
       applyThemeFromGlobalSex();
+
+      // Actualizar el nombre cuando cambia el sexo
+      updateBabyName();
     });
   });
+}
+
+function updateBabyName() {
+  const nameEl = document.getElementById("baby-name");
+  if (!nameEl || !window.BABY_NAMES) return;
+
+  const name = window.BABY_NAMES.getBabyName();
+  nameEl.textContent = name;
+}
+
+function setupNameSection() {
+  const refreshBtn = document.getElementById("refresh-name-btn");
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      updateBabyName();
+    });
+  }
+
+  // Inicializar el nombre al cargar
+  updateBabyName();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -186,5 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateCountdown, 1000);
   createWeeksGrid();
   setupGenderSwitcher();
+  setupNameSection();
 });
 
