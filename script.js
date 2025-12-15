@@ -189,6 +189,65 @@ function updateBabyName() {
 
   const name = window.BABY_NAMES.getBabyName();
   nameEl.textContent = name;
+  updateVoteButtons(name);
+}
+
+function updateVoteButtons(currentName) {
+  const voteUpBtn = document.getElementById("vote-up-btn");
+  const voteDownBtn = document.getElementById("vote-down-btn");
+  
+  if (!voteUpBtn || !voteDownBtn || !window.BABY_NAMES) return;
+
+  // Actualizar los votos mostrados en los botones
+  const votes = window.BABY_NAMES.getNameVotes(currentName);
+  voteUpBtn.dataset.name = currentName;
+  voteDownBtn.dataset.name = currentName;
+  
+  // Actualizar el texto del botón si hay votos
+  if (votes > 0) {
+    voteUpBtn.textContent = `👍 +1 (${votes})`;
+  } else {
+    voteUpBtn.textContent = "👍 +1";
+  }
+}
+
+function voteForCurrentName(vote) {
+  const nameEl = document.getElementById("baby-name");
+  if (!nameEl || !window.BABY_NAMES) return;
+
+  const currentName = nameEl.textContent;
+  if (!currentName || currentName === "...") return;
+
+  window.BABY_NAMES.voteForName(currentName, vote);
+  updateVoteButtons(currentName);
+  updateTopNames();
+
+  // Luego de votar, pasamos al siguiente nombre
+  updateBabyName();
+}
+
+function updateTopNames() {
+  const topNamesList = document.getElementById("top-names-list");
+  if (!topNamesList || !window.BABY_NAMES) return;
+
+  const topNames = window.BABY_NAMES.getTopNames(5);
+  
+  if (topNames.length === 0) {
+    topNamesList.innerHTML = '<p class="no-votes-message">Aún no hay nombres votados</p>';
+    return;
+  }
+
+  topNamesList.innerHTML = topNames
+    .map(
+      (entry, index) => `
+        <div class="top-name-item">
+          <span class="top-name-rank">${index + 1}.</span>
+          <span class="top-name-text">${entry.name}</span>
+          <span class="top-name-votes">${entry.votes} ${entry.votes === 1 ? "voto" : "votos"}</span>
+        </div>
+      `
+    )
+    .join("");
 }
 
 function setupNameSection() {
@@ -199,8 +258,23 @@ function setupNameSection() {
     });
   }
 
+  const voteUpBtn = document.getElementById("vote-up-btn");
+  if (voteUpBtn) {
+    voteUpBtn.addEventListener("click", () => {
+      voteForCurrentName(1);
+    });
+  }
+
+  const voteDownBtn = document.getElementById("vote-down-btn");
+  if (voteDownBtn) {
+    voteDownBtn.addEventListener("click", () => {
+      voteForCurrentName(-1);
+    });
+  }
+
   // Inicializar el nombre al cargar
   updateBabyName();
+  updateTopNames();
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -449,10 +449,56 @@ function getBabyName() {
   return getRandomName(sex);
 }
 
+// Estado de votos (en memoria)
+const NAME_VOTES = {};
+
+/**
+ * Vota por un nombre (+1 o -1)
+ * @param {string} name - El nombre a votar
+ * @param {number} vote - 1 para +1, -1 para -1
+ */
+function voteForName(name, vote) {
+  if (!name || typeof name !== "string") return;
+  if (!NAME_VOTES[name]) {
+    NAME_VOTES[name] = 0;
+  }
+  NAME_VOTES[name] += vote;
+  // No permitimos votos negativos menores a 0
+  if (NAME_VOTES[name] < 0) {
+    NAME_VOTES[name] = 0;
+  }
+}
+
+/**
+ * Obtiene el top N de nombres más votados
+ * @param {number} topN - Número de nombres a retornar (default: 5)
+ * @returns {Array<{name: string, votes: number}>} Array de objetos con nombre y votos
+ */
+function getTopNames(topN = 5) {
+  const entries = Object.entries(NAME_VOTES)
+    .map(([name, votes]) => ({ name, votes }))
+    .filter((entry) => entry.votes > 0)
+    .sort((a, b) => b.votes - a.votes)
+    .slice(0, topN);
+  return entries;
+}
+
+/**
+ * Obtiene los votos de un nombre específico
+ * @param {string} name - El nombre
+ * @returns {number} El número de votos
+ */
+function getNameVotes(name) {
+  return NAME_VOTES[name] || 0;
+}
+
 // Exportar funciones para uso global
 window.BABY_NAMES = {
   getRandomName,
   getBabyName,
+  voteForName,
+  getTopNames,
+  getNameVotes,
   GIRL_NAMES,
   BOY_NAMES,
 };
