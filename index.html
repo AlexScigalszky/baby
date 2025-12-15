@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuenta regresiva para nuestro bebé</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="%23f97373"/><stop offset="1" stop-color="%238b5cf6"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="%23f9fafb"/><path d="M32 52s-9-6.3-15-12.3C12.4 35.1 10 31.5 10 27a10 10 0 0 1 18-6.1A10 10 0 0 1 46 27c0 4.5-2.4 8.1-7 12.7S32 52 32 52z" fill="url(%23g)"/></svg>'
+    />
+    <!-- Estilo por defecto: género aún indefinido -->
+    <link
+      id="theme-style"
+      rel="stylesheet"
+      href="style.undefined.css"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="header-text">
+          <h1>Cuenta regresiva para conocer a nuestro bebé</h1>
+          <p class="subtitle">
+            Fecha estimada: <strong>15 de mayo de 2026</strong>
+          </p>
+        </div>
+        <div class="gender-switcher">
+          <span>Estilo:</span>
+          <button data-gender="undefined" class="gender-btn active">
+            Aún no sabemos
+          </button>
+          <button data-gender="girl" class="gender-btn">Niña</button>
+          <button data-gender="boy" class="gender-btn">Niño</button>
+        </div>
+      </header>
+
+      <main>
+        <section class="countdown-card">
+          <h2>Cuenta regresiva</h2>
+          <p class="countdown-text">
+            Falta poquito para que nuestro bebé llegue al mundo 💕
+          </p>
+          <div class="baby-gif-wrapper">
+            <video
+              id="baby-echo"
+              class="baby-gif"
+              autoplay
+              loop
+              muted
+              playsinline
+            >
+              <source src="echo.mp4" type="video/mp4" />
+              Tu navegador no puede reproducir este video.
+            </video>
+          </div>
+          <div id="countdown" class="countdown">
+            <div class="time-box">
+              <span id="days" class="time-value">0</span>
+              <span class="time-label">días</span>
+            </div>
+            <div class="time-box">
+              <span id="hours" class="time-value">0</span>
+              <span class="time-label">horas</span>
+            </div>
+            <div class="time-box">
+              <span id="minutes" class="time-value">0</span>
+              <span class="time-label">minutos</span>
+            </div>
+            <div class="time-box">
+              <span id="seconds" class="time-value">0</span>
+              <span class="time-label">segundos</span>
+            </div>
+          </div>
+          <p id="countdown-message" class="countdown-message"></p>
+        </section>
+
+        <section class="photos-section">
+          <div class="photos-header">
+            <h2>Fotos de la panza semana a semana</h2>
+            <p>
+              Aquí podés ir guardando recuerdos desde la semana 1 hasta la 40.
+              Cada tarjeta tiene un acceso rápido a una carpeta de Google Drive
+              donde podés manejar las fotos como quieras.
+            </p>
+          </div>
+
+          <div class="weeks-grid" id="weeks-grid">
+            <!-- Las semanas 1–40 se generan desde JavaScript -->
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        Hecho con mucho amor para nuestro bebé ✨
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
