@@ -26,6 +26,8 @@ window.BABY_CONFIG = {
     { week: 17, url: "https://drive.google.com/drive/u/0/folders/1Ym0qC7xXeTVS3rj7WG3qAQFnFetuw3ZC" },
     { week: 18, url: "https://drive.google.com/drive/u/0/folders/1zsftOpgmoU-fqTfjWc8ASHBfJdIhuqLz" },
     { week: 19, url: "https://drive.google.com/drive/u/0/folders/1E9wdAJ9bF_S7rCunC3A48OKFWs1fVHst" },
+    { week: 20, url: "https://drive.google.com/drive/u/0/folders/1hdkQJtqfBjbzBFmApBYrdFh5UQaNMi42" },
+    { week: 21, url: "https://drive.google.com/drive/u/0/folders/1N-IgV6lW22E09P9DNkSsV41qrE0Ck46A" },
     
     // ...
   ],
