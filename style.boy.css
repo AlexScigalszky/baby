@@ -217,6 +217,26 @@ main {
   letter-spacing: 0.05em;
 }
 
+.names-exhausted-message {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  background-color: rgba(56, 189, 248, 0.15);
+  border-radius: 10px;
+  border-left: 4px solid var(--primary-color);
+  font-size: 0.9rem;
+  color: var(--text-color);
+  font-weight: 500;
+  min-height: 1.4em;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: none;
+}
+
+.names-exhausted-message.show {
+  display: block;
+  opacity: 1;
+}
+
 .refresh-name-btn {
   margin-top: 8px;
   padding: 8px 16px;

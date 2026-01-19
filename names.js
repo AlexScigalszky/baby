@@ -386,16 +386,27 @@ const BABY_NAME_STATE = {
  */
 function getRandomName(sex) {
   // Helpers internos
-  const pickFrom = (list, visitedSet) => {
-    // Si ya usamos todos, reiniciamos el set
-    if (visitedSet.size >= list.length) {
-      visitedSet.clear();
-    }
-
+  const pickFrom = (list, visitedSet, sexType) => {
     // Construimos una lista de índices no visitados
     const availableIndexes = [];
     for (let i = 0; i < list.length; i++) {
       if (!visitedSet.has(i)) {
+        availableIndexes.push(i);
+      }
+    }
+
+    // Si solo queda 1 nombre disponible, mostramos mensaje antes de seleccionarlo
+    if (availableIndexes.length === 1) {
+      document.dispatchEvent(
+        new CustomEvent("baby-names-exhausted", { detail: { sex: sexType } })
+      );
+    }
+
+    // Si ya usamos todos, reiniciamos el set
+    if (visitedSet.size >= list.length || availableIndexes.length === 0) {
+      visitedSet.clear();
+      // Volver a construir la lista después de reiniciar
+      for (let i = 0; i < list.length; i++) {
         availableIndexes.push(i);
       }
     }
@@ -413,9 +424,9 @@ function getRandomName(sex) {
   };
 
   if (sex === "girl") {
-    return pickFrom(GIRL_NAMES, BABY_NAME_STATE.visitedGirl);
+    return pickFrom(GIRL_NAMES, BABY_NAME_STATE.visitedGirl, "girl");
   } else if (sex === "boy") {
-    return pickFrom(BOY_NAMES, BABY_NAME_STATE.visitedBoy);
+    return pickFrom(BOY_NAMES, BABY_NAME_STATE.visitedBoy, "boy");
   } else {
     // undefined: combinamos ambos, pero mantenemos estado por lista
     // Primero decidimos si sacamos de niñas o niños equilibrando un poco
@@ -425,16 +436,26 @@ function getRandomName(sex) {
 
     // Si por algún motivo no hay restantes (muy improbable), reiniciamos ambos
     if (totalRemaining <= 0) {
+      document.dispatchEvent(
+        new CustomEvent("baby-names-exhausted", { detail: { sex: "undefined" } })
+      );
       BABY_NAME_STATE.visitedGirl.clear();
       BABY_NAME_STATE.visitedBoy.clear();
       return getRandomName("undefined");
     }
 
+    // Si solo queda 1 nombre en total, mostrar mensaje
+    if (totalRemaining === 1) {
+      document.dispatchEvent(
+        new CustomEvent("baby-names-exhausted", { detail: { sex: "undefined" } })
+      );
+    }
+
     const girlChance = totalGirlRemaining / totalRemaining;
     if (Math.random() < girlChance) {
-      return pickFrom(GIRL_NAMES, BABY_NAME_STATE.visitedGirl);
+      return pickFrom(GIRL_NAMES, BABY_NAME_STATE.visitedGirl, "undefined");
     } else {
-      return pickFrom(BOY_NAMES, BABY_NAME_STATE.visitedBoy);
+      return pickFrom(BOY_NAMES, BABY_NAME_STATE.visitedBoy, "undefined");
     }
   }
 }
@@ -492,6 +513,24 @@ function getNameVotes(name) {
   return NAME_VOTES[name] || 0;
 }
 
+/**
+ * Obtiene cuántos nombres quedan sin ver en la categoría especificada
+ * @param {string} sex - "boy" | "girl" | "undefined"
+ * @returns {number} Cantidad de nombres pendientes
+ */
+function getRemainingNames(sex) {
+  if (sex === "girl") {
+    return Math.max(0, GIRL_NAMES.length - BABY_NAME_STATE.visitedGirl.size);
+  } else if (sex === "boy") {
+    return Math.max(0, BOY_NAMES.length - BABY_NAME_STATE.visitedBoy.size);
+  } else {
+    // undefined: combina ambas
+    const girlRemaining = GIRL_NAMES.length - BABY_NAME_STATE.visitedGirl.size;
+    const boyRemaining = BOY_NAMES.length - BABY_NAME_STATE.visitedBoy.size;
+    return Math.max(0, girlRemaining + boyRemaining);
+  }
+}
+
 // Exportar funciones para uso global
 window.BABY_NAMES = {
   getRandomName,
@@ -499,6 +538,7 @@ window.BABY_NAMES = {
   voteForName,
   getTopNames,
   getNameVotes,
+  getRemainingNames,
   GIRL_NAMES,
   BOY_NAMES,
 };

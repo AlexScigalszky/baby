@@ -1,7 +1,7 @@
 // Configuración global del bebé (podés editar estas variables)
 window.BABY_CONFIG = {
   // "undefined" | "boy" | "girl"
-  sex: "undefined",
+  sex: "girl",
 
   // Carpeta de Google Drive general (por si alguna semana no está definida)
   driveBaseFolderUrl:
@@ -254,6 +254,28 @@ function updateTopNames() {
     .join("");
 }
 
+function showNamesExhaustedMessage(sex) {
+  const messageEl = document.getElementById("names-exhausted-message");
+  if (!messageEl) return;
+
+  let mensaje = "";
+  if (sex === "girl") {
+    mensaje = "✨ ¡Último nombre de niña! Después de este se reiniciará la lista.";
+  } else if (sex === "boy") {
+    mensaje = "✨ ¡Último nombre de niño! Después de este se reiniciará la lista.";
+  } else {
+    mensaje = "✨ ¡Último nombre disponible! Después de este se reiniciará la lista.";
+  }
+
+  messageEl.textContent = mensaje;
+  messageEl.classList.add("show");
+
+  // Ocultar el mensaje después de 5 segundos
+  setTimeout(() => {
+    messageEl.classList.remove("show");
+  }, 5000);
+}
+
 function setupNameSection() {
   const refreshBtn = document.getElementById("refresh-name-btn");
   if (refreshBtn) {
@@ -275,6 +297,11 @@ function setupNameSection() {
       voteForCurrentName(-1);
     });
   }
+
+  // Listener para evento de nombres agotados
+  document.addEventListener("baby-names-exhausted", (e) => {
+    showNamesExhaustedMessage(e.detail.sex);
+  });
 
   // Inicializar el nombre al cargar
   updateBabyName();
