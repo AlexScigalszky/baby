@@ -8,6 +8,25 @@ window.BABY_CONFIG = {
     "https://drive.google.com/drive/folders/TU_ID_DE_CARPETA_AQUI",
 
   /**
+   * Configuración de Redis (Upstash)
+   * 
+   * Para obtener estas credenciales:
+   * 1. Creá una cuenta en https://upstash.com/
+   * 2. Creá una nueva base de datos Redis
+   * 3. Copiá el REST URL y el Token
+   * 4. Pegalos abajo
+   * 
+   * Si no configurás Redis, se usará almacenamiento en memoria local.
+   */
+  redis: {
+    // REST URL de Upstash
+    url: "https://healthy-jackass-26525.upstash.io",
+    // Token de autenticación de Upstash
+    token: "AWedAAIncDI3YTRmYzQ4ZDlhMjA0YmNkOGFlOGE4YmY5ZTljZTdlN3AyMjY1MjU",
+  },
+  
+  
+  /**
    * Array con la configuración de cada semana.
    * Completá / cambiá las URLs según tus carpetas reales de Drive.
    */
@@ -187,23 +206,29 @@ function setupGenderSwitcher() {
   });
 }
 
-function updateBabyName() {
+async function updateBabyName() {
   const nameEl = document.getElementById("baby-name");
   if (!nameEl || !window.BABY_NAMES) return;
 
   const name = window.BABY_NAMES.getBabyName();
   nameEl.textContent = name;
-  updateVoteButtons(name);
+  await updateVoteButtons(name);
 }
 
-function updateVoteButtons(currentName) {
+async function updateVoteButtons(currentName) {
   const voteUpBtn = document.getElementById("vote-up-btn");
   const voteDownBtn = document.getElementById("vote-down-btn");
   
-  if (!voteUpBtn || !voteDownBtn || !window.BABY_NAMES) return;
+  if (!voteUpBtn || !voteDownBtn) return;
 
-  // Actualizar los votos mostrados en los botones
-  const votes = window.BABY_NAMES.getNameVotes(currentName);
+  // Intentar obtener votos desde Redis, fallback a memoria local
+  let votes = 0;
+  if (window.REDIS_CLIENT) {
+    votes = await window.REDIS_CLIENT.getNameVotesRedis(currentName);
+  } else if (window.BABY_NAMES) {
+    votes = window.BABY_NAMES.getNameVotes(currentName);
+  }
+
   voteUpBtn.dataset.name = currentName;
   voteDownBtn.dataset.name = currentName;
   
@@ -215,26 +240,38 @@ function updateVoteButtons(currentName) {
   }
 }
 
-function voteForCurrentName(vote) {
+async function voteForCurrentName(vote) {
   const nameEl = document.getElementById("baby-name");
-  if (!nameEl || !window.BABY_NAMES) return;
+  if (!nameEl) return;
 
   const currentName = nameEl.textContent;
   if (!currentName || currentName === "...") return;
 
-  window.BABY_NAMES.voteForName(currentName, vote);
-  updateVoteButtons(currentName);
-  updateTopNames();
+  // Intentar votar en Redis, fallback a memoria local
+  if (window.REDIS_CLIENT) {
+    await window.REDIS_CLIENT.voteForNameRedis(currentName, vote);
+  } else if (window.BABY_NAMES) {
+    window.BABY_NAMES.voteForName(currentName, vote);
+  }
+
+  await updateVoteButtons(currentName);
+  await updateTopNames();
 
   // Luego de votar, pasamos al siguiente nombre
   updateBabyName();
 }
 
-function updateTopNames() {
+async function updateTopNames() {
   const topNamesList = document.getElementById("top-names-list");
-  if (!topNamesList || !window.BABY_NAMES) return;
+  if (!topNamesList) return;
 
-  const topNames = window.BABY_NAMES.getTopNames(5);
+  // Intentar obtener top desde Redis, fallback a memoria local
+  let topNames = [];
+  if (window.REDIS_CLIENT) {
+    topNames = await window.REDIS_CLIENT.getTopNamesRedis(5);
+  } else if (window.BABY_NAMES) {
+    topNames = window.BABY_NAMES.getTopNames(5);
+  }
   
   if (topNames.length === 0) {
     topNamesList.innerHTML = '<p class="no-votes-message">Aún no hay nombres votados</p>';
@@ -276,25 +313,37 @@ function showNamesExhaustedMessage(sex) {
   }, 5000);
 }
 
-function setupNameSection() {
+async function setupNameSection() {
+  // Inicializar Redis si está configurado
+  const config = window.BABY_CONFIG || {};
+  if (config.redis && window.REDIS_CLIENT) {
+    // Verificar si hay configuración de Redis Cloud o Upstash
+    const hasRedisCloud = config.redis.host && config.redis.port && config.redis.user && config.redis.password;
+    const hasUpstash = config.redis.url && config.redis.token;
+    
+    if (hasRedisCloud || hasUpstash) {
+      window.REDIS_CLIENT.initRedis(config.redis);
+    }
+  }
+
   const refreshBtn = document.getElementById("refresh-name-btn");
   if (refreshBtn) {
-    refreshBtn.addEventListener("click", () => {
-      updateBabyName();
+    refreshBtn.addEventListener("click", async () => {
+      await updateBabyName();
     });
   }
 
   const voteUpBtn = document.getElementById("vote-up-btn");
   if (voteUpBtn) {
-    voteUpBtn.addEventListener("click", () => {
-      voteForCurrentName(1);
+    voteUpBtn.addEventListener("click", async () => {
+      await voteForCurrentName(1);
     });
   }
 
   const voteDownBtn = document.getElementById("vote-down-btn");
   if (voteDownBtn) {
-    voteDownBtn.addEventListener("click", () => {
-      voteForCurrentName(-1);
+    voteDownBtn.addEventListener("click", async () => {
+      await voteForCurrentName(-1);
     });
   }
 
@@ -304,8 +353,8 @@ function setupNameSection() {
   });
 
   // Inicializar el nombre al cargar
-  updateBabyName();
-  updateTopNames();
+  await updateBabyName();
+  await updateTopNames();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
