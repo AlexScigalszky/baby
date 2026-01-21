@@ -47,6 +47,8 @@ window.BABY_CONFIG = {
     { week: 19, url: "https://drive.google.com/drive/u/0/folders/1E9wdAJ9bF_S7rCunC3A48OKFWs1fVHst" },
     { week: 20, url: "https://drive.google.com/drive/u/0/folders/1hdkQJtqfBjbzBFmApBYrdFh5UQaNMi42" },
     { week: 21, url: "https://drive.google.com/drive/u/0/folders/1N-IgV6lW22E09P9DNkSsV41qrE0Ck46A" },
+    { week: 22, url: "https://drive.google.com/drive/u/0/folders/19DBxEHYP4MZ1mWBoiAYA9grmgjznSMeQ" },
+    { week: 23, url: "https://drive.google.com/drive/u/0/folders/1agabHCVbdTTdeeQgu7Hcy30fH_vPkdLA" },
     
     // ...
   ],
