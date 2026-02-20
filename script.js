@@ -49,6 +49,10 @@ window.BABY_CONFIG = {
     { week: 21, url: "https://drive.google.com/drive/u/0/folders/1N-IgV6lW22E09P9DNkSsV41qrE0Ck46A" },
     { week: 22, url: "https://drive.google.com/drive/u/0/folders/19DBxEHYP4MZ1mWBoiAYA9grmgjznSMeQ" },
     { week: 23, url: "https://drive.google.com/drive/u/0/folders/1agabHCVbdTTdeeQgu7Hcy30fH_vPkdLA" },
+    { week: 24, url: "https://drive.google.com/drive/u/0/folders/1udIh1xYylJsO7YP-9V4FuNESx-__A56H" },
+    { week: 25, url: "https://drive.google.com/drive/u/0/folders/1X35GCgn4wvo8JOjzhOYg_3IsHMfMToSd" },
+    { week: 26, url: "https://drive.google.com/drive/u/0/folders/1wuSkuzPG89_rZ1tDlc9l74O1mP9AowXn" },
+    { week: 27, url: "https://drive.google.com/drive/u/0/folders/14GShnu00NI4pcK5lJkgRgbqUsx_LG8iR" },
     
     // ...
   ],
