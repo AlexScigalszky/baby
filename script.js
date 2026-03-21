@@ -53,7 +53,13 @@ window.BABY_CONFIG = {
     { week: 25, url: "https://drive.google.com/drive/u/0/folders/1X35GCgn4wvo8JOjzhOYg_3IsHMfMToSd" },
     { week: 26, url: "https://drive.google.com/drive/u/0/folders/1wuSkuzPG89_rZ1tDlc9l74O1mP9AowXn" },
     { week: 27, url: "https://drive.google.com/drive/u/0/folders/14GShnu00NI4pcK5lJkgRgbqUsx_LG8iR" },
-    
+{ week: 28, url: "https://drive.google.com/drive/folders/1IQls6XECc_3LNqYbUMBNoI6pkDDxb2NS" },
+{ week: 29, url: "https://drive.google.com/drive/folders/12G3G_a_c_QbFPu6gUul2ndbK3roHgveL" },
+{ week: 30, url: "https://drive.google.com/drive/folders/1fcgaoNNiUABY0XHvDzxlf66wXgM57Fn0" },
+{ week: 31, url: "https://drive.google.com/drive/folders/1BIUMXHzbJZ8d64NzecQlvqu0JBhwHpkK" },
+
+
+
     // ...
   ],
 
